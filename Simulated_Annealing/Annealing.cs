@@ -10,10 +10,11 @@ namespace Simulated_Annealing
     static class Annealing
     {
         public static List<Machine> machineList = new List<Machine>(Initializer.machineList.Count);
-        static float temperature = 30;
         public static int Cmax = 1000000000;
-        const float coolingCoefficient = 0.9f;
         public static int totalAlgorithmTime = 0;
+        const float coolingCoefficient = 0.9f;
+        const float endConditionTempRatio = 0.1f;
+        readonly float temperature = 30;
 
         public static void Swap<T>(this List<T> list, int index1, int index2)
         {
@@ -21,6 +22,7 @@ namespace Simulated_Annealing
             list[index1] = list[index2];
             list[index2] = tmp;
         }
+
         public static void copyMachines()
         {
             Initializer.machineList.ForEach((item) =>
@@ -90,7 +92,7 @@ namespace Simulated_Annealing
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            while (currentTemperature > 0.1 * temperature)
+            while (currentTemperature > endConditionTempRatio * temperature)
             {
                 currentTemperature = generateNewNeighbor(random, currentTemperature);
             }
@@ -105,10 +107,12 @@ namespace Simulated_Annealing
             int randomNeighbor = random.Next(0, machineList[0].Tasks.Count - 1);
             int randomNeighbor2 = random.Next(0, machineList[0].Tasks.Count - 1);
             swapAndConfigure(randomNeighbor, randomNeighbor2);
+            
             if (!acceptNeighborSolution(machineList[machineList.Count - 1].Tasks.Last().TaskStop))
             {
                 swapAndConfigure(randomNeighbor, randomNeighbor2);
             }
+            
             currentTemperature = updateTemperature(currentTemperature);
             return currentTemperature;
         }
