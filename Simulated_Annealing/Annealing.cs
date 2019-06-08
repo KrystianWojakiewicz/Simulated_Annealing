@@ -14,7 +14,7 @@ namespace Simulated_Annealing
         public static int totalAlgorithmTime = 0;
         const float coolingCoefficient = 0.9f;
         const float endConditionTempRatio = 0.1f;
-        readonly float temperature = 30;
+        readonly static float temperature = 30;
 
         public static void Swap<T>(this List<T> list, int index1, int index2)
         {
